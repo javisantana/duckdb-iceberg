@@ -29,12 +29,7 @@
 
 namespace duckdb {
 
-struct IcebergScanGlobalTableFunctionState : public GlobalTableFunctionState {
-public:
-	static unique_ptr<GlobalTableFunctionState> Init(ClientContext &context, TableFunctionInitInput &input) {
-		return make_uniq<GlobalTableFunctionState>();
-	}
-};
+
 
 static unique_ptr<ParsedExpression> GetFilenameExpr(unique_ptr<ColumnRefExpression> colref_expr) {
 	vector<unique_ptr<ParsedExpression>> split_children;
@@ -214,10 +209,10 @@ static unique_ptr<TableRef> MakeScanExpression(vector<Value> &data_file_values, 
 	return make_uniq<SubqueryRef>(std::move(select_statement), "iceberg_scan");
 }
 
-static unique_ptr<TableRef> IcebergScanBindReplace(ClientContext &context, TableFunctionBindInput &input) {
+unique_ptr<TableRef> IcebergScanBindReplace(ClientContext &context, TableFunctionBindInput &input) {
 	FileSystem &fs = FileSystem::GetFileSystem(context);
 	auto iceberg_path = input.inputs[0].ToString();
-
+	printf("ICEBERG SCAN BIND REPLACE: path: %s\n", iceberg_path.c_str());
 	// Enabling this will ensure the ANTI Join with the deletes only looks at filenames, instead of full paths
 	// this allows hive tables to be moved and have mismatching paths, usefull for testing, but will have worse
 	// performance

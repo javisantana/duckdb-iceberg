@@ -14,6 +14,16 @@
 
 namespace duckdb {
 
+
+struct IcebergScanGlobalTableFunctionState : public GlobalTableFunctionState {
+public:
+	static unique_ptr<GlobalTableFunctionState> Init(ClientContext &context, TableFunctionInitInput &input) {
+		return make_uniq<GlobalTableFunctionState>();
+	}
+};
+
+unique_ptr<TableRef> IcebergScanBindReplace(ClientContext &context, TableFunctionBindInput &input);
+
 class IcebergFunctions {
 public:
 	static vector<TableFunctionSet> GetTableFunctions();
