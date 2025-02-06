@@ -154,10 +154,8 @@ public:
 
 
 static void LoadInternal(DatabaseInstance &instance) {
-	printf("Starting LoadInternal\n");
 	auto &config = DBConfig::GetConfig(instance);
-	
-	printf("Adding extension option\n");
+
 	config.AddExtensionOption(
 		"unsafe_enable_version_guessing",
 		"Enable globbing the filesystem (if possible) to find the latest version metadata. This could result in reading an uncommitted version.",
@@ -166,14 +164,11 @@ static void LoadInternal(DatabaseInstance &instance) {
 	);
 
 	// Iceberg Table Functions
-	printf("Registering table functions\n");
 	for (auto &fun : IcebergFunctions::GetTableFunctions()) {
-		printf("Registering table function\n");
 		ExtensionUtil::RegisterFunction(instance, fun);
 	}
 
 	// Iceberg Scalar Functions
-	printf("Registering scalar functions\n");
 	for (auto &fun : IcebergFunctions::GetScalarFunctions()) {
 		ExtensionUtil::RegisterFunction(instance, fun);
 	}
@@ -182,7 +177,7 @@ static void LoadInternal(DatabaseInstance &instance) {
 	IcebergAttachFunction attach_func;
 	ExtensionUtil::RegisterFunction(instance, attach_func);
 
-	printf("LoadInternal complete\n");
+	config.storage_extensions["iceberg"] = duckdb::make_uniq<duckdb::IcebergStorageExtension>();
 }
 
 void IcebergExtension::Load(DuckDB &db) {
@@ -205,19 +200,8 @@ DUCKDB_EXTENSION_API const char *iceberg_version() {
 }
 
 DUCKDB_EXTENSION_API void iceberg_storage_init(duckdb::DBConfig &config) {
-	printf("ICEBERG SCANNER STORAGE INIT - start\n");
-	try {
-		printf("Creating storage extension\n");
-		config.storage_extensions["iceberg"] = duckdb::make_uniq<duckdb::IcebergStorageExtension>();
-		printf("Storage extension created successfully\n");
-	} catch (const std::exception& e) {
-		printf("Exception during storage init: %s\n", e.what());
-		throw;
-	} catch (...) {
-		printf("Unknown exception during storage init\n");
-		throw;
-	}
-	printf("ICEBERG SCANNER STORAGE INIT - complete\n");
+	printf("ICEBERG SCANNER STORAGE INIT\n");
+	config.storage_extensions["iceberg"] = duckdb::make_uniq<duckdb::IcebergStorageExtension>();
 }
 
 }
