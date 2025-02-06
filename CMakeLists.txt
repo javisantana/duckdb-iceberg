@@ -18,7 +18,14 @@ set(EXTENSION_SOURCES
     src/common/iceberg.cpp
     src/iceberg_functions/iceberg_snapshots.cpp
     src/iceberg_functions/iceberg_scan.cpp
-    src/iceberg_functions/iceberg_metadata.cpp)
+    src/iceberg_functions/iceberg_metadata.cpp
+    src/storage/iceberg_storage.cpp
+    src/storage/iceberg_catalog.cpp
+    src/storage/iceberg_insert.cpp
+    src/storage/iceberg_table_entry.cpp
+    src/storage/iceberg_schema_entry.cpp
+    src/storage/iceberg_transaction_manager.cpp
+    )
 
 add_library(${EXTENSION_NAME} STATIC ${EXTENSION_SOURCES})
 
