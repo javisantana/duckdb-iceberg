@@ -30,7 +30,6 @@ optional_ptr<CatalogEntry> IcebergCatalog::CreateSchema(CatalogTransaction trans
 }
 
 void IcebergCatalog::ScanSchemas(ClientContext &context, std::function<void(SchemaCatalogEntry &)> callback) {
-    printf("ICEBERG SCAN SCHEMAS: %d\n", main_schema->catalog.IsDuckCatalog());
     callback(*main_schema);
 }
 

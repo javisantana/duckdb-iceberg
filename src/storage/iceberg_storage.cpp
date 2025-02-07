@@ -28,13 +28,11 @@ static unique_ptr<Catalog> IcebergAttach(StorageExtensionInfo *storage_info, Cli
 
 static unique_ptr<TransactionManager> IcebergCreateTransactionManager(StorageExtensionInfo *storage_info,
                                                                      AttachedDatabase &db, Catalog &catalog) {
-	printf("ICEBERG CREATE TRANSACTION MANAGER\n");
 	auto &iceberg_catalog = catalog.Cast<IcebergCatalog>();
 	return make_uniq<IcebergTransactionManager>(db, iceberg_catalog);
 }
 
 IcebergStorageExtension::IcebergStorageExtension() {
-	printf("ICEBERG STORAGE EXTENSION\n");
 	attach = IcebergAttach;
 	create_transaction_manager = IcebergCreateTransactionManager;
 }

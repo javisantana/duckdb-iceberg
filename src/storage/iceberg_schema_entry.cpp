@@ -93,6 +93,8 @@ void IcebergSchemaEntry::Scan(ClientContext &context, CatalogType type,
     auto entry2 = GetEntry(transaction, type, "lineitem_iceberg_2");
 	callback(*entry2);
 }
+
+
 void IcebergSchemaEntry::Scan(CatalogType type, const std::function<void(CatalogEntry &)> &callback) {
 	throw InternalException("Scan");
 }
@@ -103,9 +105,17 @@ void IcebergSchemaEntry::DropEntry(ClientContext &context, DropInfo &info) {
 optional_ptr<CatalogEntry> IcebergSchemaEntry::GetEntry(CatalogTransaction transaction, CatalogType type,
                                                        const string &name) {
 
-    printf("ICEBERG GET ENTRY\n");
-    CreateTableInfo info(*this, name);
-    return make_uniq<IcebergTableEntry>(catalog, *this, info, false).get();
-}
+
+    auto& c = dynamic_cast<IcebergCatalog*>(&catalog);
+    CreateTableInfo info(c.GetMainSchema(), name);
+    switch (type) {
+        case CatalogType::INDEX_ENTRY:
+        case CatalogType::TABLE_ENTRY:
+        case CatalogType::VIEW_ENTRY:
+            return make_uniq<IcebergTableEntry>(catalog, catalog.GetMainSchema(), info, false).get();
+        default:
+            return nullptr;
+	}
+ }
 
 } // namespace duckdb
